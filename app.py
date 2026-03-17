@@ -22,6 +22,10 @@ def create_meal():
   db.session.commit()
   return jsonify(meal.to_dict())
   
+@app.route('/meals', methods=['GET'])
+def list_meals():
+  meals = Meal.query.all()
+  return jsonify([meal.to_dict() for meal in meals])
 
 
 @app.route('/hello-world', methods=['GET'])
