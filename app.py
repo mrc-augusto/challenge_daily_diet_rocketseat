@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from config import DATABASE_URI
 from models.meal import Meal
+from utils import jsonify_meals
 from database import db
 
 app = Flask(__name__)
@@ -25,12 +26,14 @@ def create_meal():
 @app.route('/meals', methods=['GET'])
 def list_meals():
   meals = Meal.query.all()
-  return jsonify([meal.to_dict() for meal in meals])
+  return jsonify_meals(meals)
 
 @app.route('/meals/<int:id>', methods=['GET'])
 def get_meal(id):
-  meal = Meal.query.get_or_404(id)
-  return jsonify(meal.to_dict())
+  meal = Meal.query.get(id)
+  if not meal:
+    return jsonify({'message': 'Refeição não encontrada'}), 404
+  return jsonify_meals([meal])
 
 
 
