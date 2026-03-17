@@ -9,6 +9,20 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+@app.route('/meals', methods=['POST'])
+def create_meal():
+  data=request.json
+  meal = Meal()
+  meal.update_from_dict(data)
+  db.session.add(meal)
+  db.session.commit()
+  return jsonify(meal.to_dict())
+  # name=data.get('name')
+  # description=data.get('description')
+  # date_time=data.get('date_time')
+  # in_diet=data.get('in_diet')
+
+
 @app.route('/hello-world', methods=['GET'])
 def hello_world():
   return 'Hello World!'

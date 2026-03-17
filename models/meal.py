@@ -6,7 +6,7 @@ class Meal(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(80), nullable=False)
   description = db.Column(db.String(200))
-  date_time = db.Column(db.DateTime, nullable=False)
+  date_time = db.Column(db.DateTime, default=datetime.now, nullable=False)
   in_diet = db.Column(db.Boolean, nullable=False)
 
 # funções auxiliares para converter o objeto Meal em um dicionário e atualizar o objeto a partir de um dicionário
@@ -26,6 +26,6 @@ class Meal(db.Model):
     if 'description' in data:
       self.description = data['description']
     if 'date_time' in data:
-      self.date_time = datetime.striptime(data['date_time'], '%d/%m/%Y %H:%M')
+      self.date_time = datetime.strptime(data['date_time'], '%d/%m/%Y %H:%M')
     if 'in_diet' in data:
       self.in_diet = data['in_diet']  
