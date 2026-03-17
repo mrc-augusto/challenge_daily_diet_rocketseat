@@ -27,6 +27,12 @@ def list_meals():
   meals = Meal.query.all()
   return jsonify([meal.to_dict() for meal in meals])
 
+@app.route('/meals/<int:id>', methods=['GET'])
+def get_meal(id):
+  meal = Meal.query.get_or_404(id)
+  return jsonify(meal.to_dict())
+
+
 
 @app.route('/hello-world', methods=['GET'])
 def hello_world():
