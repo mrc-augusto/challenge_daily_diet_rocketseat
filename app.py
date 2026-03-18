@@ -19,6 +19,11 @@ def create_meal():
     date_time=data.get('date_time'),
     in_diet=data.get('in_diet')
   )
+
+  missing = validate_required_fields(data, ['name', 'in_diet'])
+  if missing:
+    return jsonify({'message': f'Campos obrigatórios faltando: {', '.join(missing)}'}), 400
+
   db.session.add(meal)
   db.session.commit()
   return jsonify(meal.to_dict())
@@ -50,13 +55,22 @@ def update_meal(id):
   if missing:
     return jsonify({'message': f'Campos obrigatórios faltando: {', '.join(missing)}'}), 400
 
-
   meal.name = name
   meal.description = description
   meal.in_diet = in_diet
 
   db.session.commit()
   return jsonify_meals([meal])
+
+@app.route('/meals/<int:id>', methods=['DELETE'])
+def delete_meal(id):
+  meal = Meal.query.get(id)
+  if not meal:
+    return jsonify({'message': 'Refeição não encontrada'}), 404
+  
+  db.session.delete(meal)
+  db.session.commit()
+  return jsonify({'message': 'Refeição deletada com sucesso'})
 
 
 
