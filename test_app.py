@@ -2,6 +2,7 @@ import pytest
 from app import app
 from database import db
 from models.meal import Meal
+from datetime import datetime
 
 @pytest.fixture
 def client():
@@ -138,3 +139,16 @@ def test_validate_required_fields(client):
   }
   missing = validate_required_fields(data, ['name', 'in_diet'])
   assert 'name' in missing and 'in_diet' in missing
+
+def test_meal_model_methods():
+  meal = Meal(
+    name='Teste', 
+    description='Teste descrição', 
+    date_time=datetime.strptime('18/03/2026 12:00', '%d/%m/%Y %H:%M'), 
+    in_diet=True
+  )
+  dict_meal = meal.to_dict()
+  assert dict_meal['name'] == 'Teste'
+  meal.update_from_dict({'name': 'Novo', 'in_diet': False})
+  assert meal.name == 'Novo'
+  assert meal.in_diet is False
