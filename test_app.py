@@ -41,4 +41,20 @@ def test_list_meals(client):
   assert response.status_code == 200
   assert len(response.json) >= 1
 
+def test_get_meal_by_id(client):
+  post = client.post('/meals', json={
+    'name': 'Jantar',
+    'description': 'Salada',
+    'date_time': '18/03/2026 19:00',
+    'in_diet': False
+  })
+  meal_id = post.json['id']
+  response = client.get(f'/meals/{meal_id}')
+  assert response.status_code == 200
+  assert response.json[0]['name'] == 'Jantar'
+
+def test_get_meal_not_found(client):
+  response = client.get('/meals/999')
+  assert response.status_code == 404
+  assert 'Refeição não encontrada' in response.json['message']
 
