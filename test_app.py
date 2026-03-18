@@ -81,3 +81,21 @@ def test_update_meal_not_found(client):
   assert response.status_code == 404
   assert 'Refeição não encontrada' in response.json['message']
 
+def test_delete_meal_success(client):
+  post = client.post('/meals', json={
+    'name': 'Ceia',
+    'description': 'Iogurte',
+    'date_time': '18/03/2026 22:00',
+    'in_diet': True
+  })
+  meal_id = post.json['id']
+  response = client.delete(f'/meals/{meal_id}')
+  assert response.status_code == 200
+  assert 'Refeição deletada com sucesso' in response.json['message']
+
+def test_delete_meal_not_found(client):
+  response = client.delete('/meals/999')
+  assert response.status_code == 404
+  assert 'Refeição não encontrada' in response.json['message']
+
+
