@@ -98,4 +98,18 @@ def test_delete_meal_not_found(client):
   assert response.status_code == 404
   assert 'Refeição não encontrada' in response.json['message']
 
+def test_get_meals_by_date(client):
+  client.post('/meals', json={
+    'name': 'Café da manhã',
+    'description': 'Pão e café',
+    'date_time': '18/03/2026 08:00',
+    'in_diet': True
+  })
+  response = client.get('/meals/date/18-03-2026')
+  assert response.status_code == 200
+  assert len(response.json) >= 1
 
+def test_get_meals_by_invalid_date(client):
+  response = client.get('/meals/date/01-01-2025')
+  assert response.status_code == 200
+  assert len(response.json) == 0
