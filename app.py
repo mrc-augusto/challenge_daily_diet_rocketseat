@@ -13,10 +13,17 @@ db.init_app(app)
 @app.route('/meals', methods=['POST'])
 def create_meal():
   data=request.json
+  from datetime import datetime
+  date_time = data.get('date_time')
+  if date_time:
+    try:
+      date_time = datetime.strptime(date_time, '%d/%m/%Y %H:%M')
+    except ValueError:
+      return jsonify({'message': 'Formato de data inválido. Use dd/mm/yyyy HH:MM'}), 400
   meal = Meal(
     name=data.get('name'),
     description=data.get('description'),
-    date_time=data.get('date_time'),
+    date_time=date_time,
     in_diet=data.get('in_diet')
   )
 
@@ -95,12 +102,5 @@ def get_meals_by_diet(in_diet):
   meals = Meal.query.filter_by(in_diet=in_diet.lower() == 'true').all()
   return jsonify_meals(meals)
   
-
-
-
-@app.route('/hello-world', methods=['GET'])
-def hello_world():
-  return 'Hello World!'
-
 if __name__ == '__main__':
   app.run(debug=True)
