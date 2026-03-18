@@ -72,6 +72,22 @@ def delete_meal(id):
   db.session.commit()
   return jsonify({'message': 'Refeição deletada com sucesso'})
 
+@app.route('/meals/date/<date>', methods=['GET'])
+def get_meals_by_date(date):
+  from datetime import datetime
+  try:
+    date_obj = datetime.strptime(date, '%d-%m-%Y').date()
+  except ValueError:
+    return jsonify({'mesage': 'Formato de data inválido. Use dd-mm-yyyy'}),400
+
+  start = datetime(date_obj.year, date_obj.month, date_obj.day, 0, 0, 0)
+  end = datetime(date_obj.year, date_obj.month, date_obj.day, 23, 59, 59)
+
+  meals = Meal.query.filter(Meal.date_time >= start, Meal.date_time <= end).all()
+
+  return jsonify_meals(meals)
+  
+
 
 
 @app.route('/hello-world', methods=['GET'])
