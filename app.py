@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from config import DATABASE_URI
 from models.meal import Meal
-from utils import jsonify_meals
+from utils import jsonify_meals, validate_required_fields
 from database import db
 
 app = Flask(__name__)
@@ -45,6 +45,11 @@ def update_meal(id):
   name = data.get('name', meal.name)
   description = data.get('description', meal.description)
   in_diet = data.get('in_diet', meal.in_diet)
+
+  missing = validate_required_fields(data, ['name', 'in_diet'])
+  if missing:
+    return jsonify({'message': f'Campos obrigatórios faltando: {', '.join(missing)}'}), 400
+
 
   meal.name = name
   meal.description = description
