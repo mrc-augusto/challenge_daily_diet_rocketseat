@@ -129,3 +129,12 @@ def test_get_meals_by_invalid_diet(client):
   response = client.get('/meals/diet/invalid')
   assert response.status_code == 400
   assert 'Valor inválido para in_diet' in response.json['message']
+
+def test_validate_required_fields(client):
+  from utils import validate_required_fields
+  data={
+    'name': '',
+    'in_diet': None
+  }
+  missing = validate_required_fields(data, ['name', 'in_diet'])
+  assert 'name' in missing and 'in_diet' in missing
