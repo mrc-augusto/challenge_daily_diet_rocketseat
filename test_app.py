@@ -113,3 +113,19 @@ def test_get_meals_by_invalid_date(client):
   response = client.get('/meals/date/01-01-2025')
   assert response.status_code == 200
   assert len(response.json) == 0
+
+def test_get_meals_by_diet(client):
+  client.post('/meals', json={
+    'name': 'Almoço',
+    'description': 'Arroz e feijão',
+    'date_time': '18/03/2026 12:00',
+    'in_diet': False
+  })
+  response = client.get('/meals/diet/false')
+  assert response.status_code == 200
+  assert len(response.json) >= 1
+
+def test_get_meals_by_invalid_diet(client):
+  response = client.get('/meals/diet/invalid')
+  assert response.status_code == 400
+  assert 'Valor inválido para in_diet' in response.json['message']
