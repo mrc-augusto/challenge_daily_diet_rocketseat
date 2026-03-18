@@ -58,3 +58,26 @@ def test_get_meal_not_found(client):
   assert response.status_code == 404
   assert 'Refeição não encontrada' in response.json['message']
 
+def test_update_meal_sucess(client):
+  post = client.post('/meals', json={
+    'name': 'Lanche',
+    'description': 'Bolo',
+    'date_time': '18/03/2026 16:00',
+    'in_diet': True
+  })
+  meal_id = post.json['id']
+  response = client.put(f'/meals/{meal_id}', json={
+    'name': 'Lanche Atualizado',
+    'in_diet': False
+  })
+  assert response.status_code == 200
+  assert response.json[0]['name'] == 'Lanche Atualizado'
+
+def test_update_meal_not_found(client):
+  response = client.put('/meals/999', json={
+    'name': 'Lanche Atualizado',
+    'in_diet': True
+  })
+  assert response.status_code == 404
+  assert 'Refeição não encontrada' in response.json['message']
+
