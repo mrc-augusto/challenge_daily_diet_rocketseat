@@ -86,6 +86,14 @@ def get_meals_by_date(date):
   meals = Meal.query.filter(Meal.date_time >= start, Meal.date_time <= end).all()
 
   return jsonify_meals(meals)
+
+@app.route('/meals/diet/<in_diet>', methods=['GET'])
+def get_meals_by_diet(in_diet):
+  if in_diet.lower() not in ['true', 'false']:
+    return jsonify({'message': 'Valor inválido para in_diet. Use true ou false'}), 400
+  
+  meals = Meal.query.filter_by(in_diet=in_diet.lower() == 'true').all()
+  return jsonify_meals(meals)
   
 
 
